@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shwetha's Roadmap</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.85em%22 x=%2250%22 font-size=%22100%22 text-anchor=%22middle%22>🐶</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;600;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/canvas-confetti/1.6.0/confetti.browser.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            /* APP COLORS */
+            --bg-dark: #0a0014;
+            --pink: #ff6bcb;
+            --purple: #9d4edd;
+            --blue: #00d4ff;
+            --mint: #7df9ff;
+            --lavender: #e0aaff;
+            --peach: #ffc8dd;
+            --gold: #ffd60a;
+
+            /* DOG ANIMATION COLORS & VARS */
+            --color-fur: #ffb141;
+            --color-fur-dark: #F5832C;
+            --color-spot: #F9584C;
+            --color-snout: #544258;
+            --color-collar: #3EAB6C;
+            --duration: .7s;
+            --semi-duration: calc(var(--duration) / 2);
+            --easing: cubic-bezier(.5, 0, .5, 1);
+            --stagger: calc(-1 * var(--semi-duration) / 2);
+        }
+
+        body {
+            font-family: 'Comfortaa', cursive;
+            background: radial-gradient(ellipse at top, #1a0033, #0a0014);
+            color: white;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* --- EXISTING STYLES --- */
+
+        /* Reset/Restore Button */
+        .kanban-header { position: relative; }
+        .reset-btn {
+            position: absolute; top: 0; right: 10px;
+            background: rgba(255, 50, 50, 0.1); border: 1px solid rgba(255, 50, 50, 0.4);
+            color: #ff6b6b; width: 28px; height: 28px; border-radius: 50%;
+            cursor: pointer; font-size: 1rem; transition: all 0.4s ease;
+            display: flex; align-items: center; justify-content: center; z-index: 10;
+        }
+        .reset-btn:hover {
+            background: rgba(255, 50, 50, 0.9); color: white;
+            transform: rotate(-180deg) scale(1.1); box-shadow: 0 0 15px #ff6b6b;
+        }
+
+        /* Nebula Background */
+        .nebula-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0; pointer-events: none; overflow: hidden;
+        }
+        .nebula-cloud {
+            position: absolute; border-radius: 50%; filter: blur(80px);
+            opacity: 0.4; animation: nebulaFloat 10s infinite alternate;
+        }
+        .nebula-cloud:nth-child(1) { top: -10%; left: -10%; width: 50vw; height: 50vw; background: var(--purple); animation-delay: -2s; }
+        .nebula-cloud:nth-child(2) { bottom: -10%; right: -10%; width: 60vw; height: 60vw; background: var(--blue); animation-delay: -2s; }
+        .nebula-cloud:nth-child(3) { top: 30%; left: 20%; width: 40vw; height: 40vw; background: var(--pink); opacity: 0.2; animation-delay: -2s; }
+
+        @keyframes nebulaFloat {
+            0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+            50% { transform: translate(30px, 50px) scale(1.1) rotate(10deg); }
+            100% { transform: translate(-20px, 20px) scale(0.9) rotate(-5deg); }
+        }
+
+        .app-container {
+            position: relative; z-index: 1; height: 100vh;
+            display: flex; flex-direction: column; padding: 15px; gap: 15px;
+        }
+
+        /* --- HEADER --- */
+        .header {
+            background: linear-gradient(135deg, rgba(157, 78, 221, 0.2), rgba(255, 107, 203, 0.2));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            padding: 15px 30px;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            box-shadow: 0 8px 32px rgba(157, 78, 221, 0.3);
+            animation: slideInUp 0.6s ease;
+            position: relative; 
+            overflow: hidden; /* Keeps dog inside */
+        }
+
+        /* TEXT LAYERS (z-index 30) */
+        .user-greeting, .level-display, .stats-row {
+            z-index: 30;
+            position: relative;
+        }
+
+        .user-greeting { display: flex; align-items: center; gap: 15px; }
+        .greeting-text h1 {
+            font-size: 1.5rem; font-weight: 700;
+            background: linear-gradient(90deg, var(--pink), var(--blue), var(--mint));
+            background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            animation: shimmer 10s linear infinite;
+        }
+        .greeting-text p { font-size: 1rem; color: var(--lavender); }
+
+        .level-display { text-align: center; }
+        .level-circle { position: relative; width: 80px; height: 80px; margin: 0 auto; }
+        .level-ring {
+            width: 100%; height: 100%; border-radius: 50%;
+            background: conic-gradient(var(--pink) var(--progress, 0%), transparent 0);
+            animation: glow 10s infinite; display: flex; align-items: center; justify-content: center;
+        }
+        .level-inner {
+            width: 70px; height: 70px; border-radius: 50%; background: rgba(10, 0, 20, 0.9);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .level-num { font-size: 1.5rem; font-weight: bold; color: var(--gold); }
+        .level-label { font-size: 0.6rem; color: var(--lavender); }
+
+        .stats-row { display: flex; gap: 20px; justify-content: flex-end; }
+        .stat-chip {
+            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);
+            padding: 8px 20px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex; flex-direction: column; align-items: center; gap: 3px; transition: all 0.3s;
+        }
+        .stat-chip:hover { transform: translateY(-3px); box-shadow: 0 5px 15px var(--pink); }
+        .stat-value {
+            font-size: 1.2rem; font-weight: bold;
+            background: linear-gradient(90deg, var(--mint), var(--blue));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .stat-label { font-size: 0.7rem; color: var(--lavender); }
+
+        /* Panels */
+        .main-grid { flex: 1; display: grid; grid-template-columns: 320px 1fr 400px; gap: 15px; overflow: hidden; }
+        .panel {
+            background: linear-gradient(135deg, rgba(157, 78, 221, 0.15), rgba(255, 107, 203, 0.1));
+            backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 25px; padding: 20px; overflow: hidden;
+            box-shadow: 0 8px 32px rgba(157, 78, 221, 0.3);
+        }
+        .panel-left { animation: slideInLeft 0.6s ease; }
+        .panel-center { animation: slideInUp 0.7s ease; }
+        .panel-right { animation: slideInRight 0.6s ease; }
+
+        /* Week Navigator */
+        .week-nav-header { text-align: center; margin-bottom: 20px; }
+        .week-nav-header h2 { font-size: 1.2rem; color: var(--mint); margin-bottom: 10px; }
+        .week-selector { display: flex; align-items: center; justify-content: space-between; background: rgba(0, 0, 0, 0.3); padding: 30px; border-radius: 20px; margin-bottom: 20px; }
+        .nav-btn {
+            background: linear-gradient(135deg, var(--purple), var(--pink)); border: none; width: 40px; height: 40px;
+            border-radius: 50%; cursor: pointer; color: white; font-size: 1.2rem; transition: all 0.3s;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .nav-btn:hover { transform: scale(1.1); box-shadow: 0 0 20px var(--pink); }
+        .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+        .current-week-display { text-align: center; flex: 1; }
+        .week-number {
+            font-size: 2rem; font-weight: bold;
+            background: linear-gradient(90deg, var(--pink), var(--blue));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .week-title { font-size: 0.9rem; color: var(--lavender); margin-top: 5px; }
+        .week-progress-bar { height: 8px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; overflow: hidden; margin-bottom: 20px; }
+        .week-progress-fill { height: 100%; background: linear-gradient(90deg, var(--purple), var(--pink), var(--blue)); width: 0%; transition: width 0.5s ease; box-shadow: 0 0 10px var(--pink); }
+        .milestone-list { display: flex; flex-direction: column; gap: 12px; max-height: calc(100vh - 400px); overflow-y: auto; padding-right: 10px; }
+        .milestone-item { background: rgba(0, 0, 0, 0.3); padding: 15px; border-radius: 15px; border-left: 3px solid var(--purple); cursor: pointer; transition: all 0.3s; position: relative; }
+        .milestone-item:hover { background: rgba(255, 107, 203, 0.2); transform: translateX(5px); border-left-color: var(--pink); }
+        .milestone-item.completed { border-left-color: var(--mint); opacity: 0.7; }
+        .milestone-item.completed::after { content: '✓'; position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--mint); font-size: 1.5rem; }
+        .milestone-label { font-size: 0.7rem; color: var(--mint); margin-bottom: 5px; }
+        .milestone-title { font-size: 0.9rem; font-weight: 600; color: white; }
+
+        /* Kanban */
+        .kanban-header { text-align: center; margin-bottom: 20px; }
+        .kanban-title { font-size: 1.3rem; background: linear-gradient(90deg, var(--pink), var(--mint)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 5px; }
+        .kanban-subtitle { font-size: 0.8rem; color: var(--lavender); }
+        .kanban-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; height: calc(100vh - 250px); }
+        .kanban-col { background: rgba(0, 0, 0, 0.3); border-radius: 20px; padding: 15px; display: flex; flex-direction: column; border-top: 3px solid; }
+        .kanban-col.todo { border-top-color: var(--peach); }
+        .kanban-col.progress { border-top-color: var(--blue); }
+        .kanban-col.done { border-top-color: var(--mint); }
+        .col-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        .col-title { font-size: 0.9rem; font-weight: 600; }
+        .col-count { background: rgba(255, 255, 255, 0.2); padding: 3px 10px; border-radius: 12px; font-size: 0.8rem; }
+        .task-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-right: 5px; }
+        .task-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05)); padding: 12px; border-radius: 12px; cursor: grab;
+            border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.3s; position: relative; overflow: hidden;
+        }
+        .task-card::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent); transition: left 0.5s; }
+        .task-card:hover::before { left: 100%; }
+        .task-card:hover { transform: translateY(-3px); box-shadow: 0 5px 20px rgba(255, 107, 203, 0.4); border-color: var(--pink); }
+        .task-text { font-size: 0.85rem; line-height: 1.4; }
+
+        /* Dashboard */
+        .dashboard-grid { display: flex; flex-direction: column; gap: 15px; height: 100%; }
+        .progress-rings { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .ring-stat { background: rgba(0, 0, 0, 0.3); border-radius: 20px; padding: 15px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        .ring-visual { position: relative; width: 80px; height: 80px; }
+        .ring-bg { width: 100%; height: 100%; border-radius: 50%; border: 6px solid rgba(255, 255, 255, 0.1); }
+        .ring-progress {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 50%;
+            border: 6px solid transparent; border-top-color: var(--color); border-right-color: var(--color);
+            transform: rotate(var(--rotation, 0deg)); transition: transform 1s ease;
+        }
+        .ring-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
+        .ring-value { font-size: 1.3rem; font-weight: bold; color: var(--color); }
+        .ring-label { font-size: 0.7rem; color: var(--lavender); text-align: center; }
+        .achievements-section { flex: 1; background: rgba(0, 0, 0, 0.3); border-radius: 20px; padding: 15px; overflow-y: auto; -ms-overflow-style: none; scrollbar-width: none; }
+        .achievements-section::-webkit-scrollbar { display: none; }
+        .section-title { font-size: 1rem; color: var(--mint); margin-bottom: 15px; text-align: center; }
+        .badge-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 15px; }
+        .badge {
+            aspect-ratio: 1; background: rgba(0, 0, 0, 0.5); border-radius: 50%; display: flex;
+            align-items: center; justify-content: center; font-size: 2rem; position: relative;
+            transition: all 0.3s; border: 5px solid rgba(255, 255, 255, 0.1);
+        }
+        .badge.unlocked { background: linear-gradient(135deg, rgba(157, 78, 221, 0.3), rgba(255, 107, 203, 0.3)); border-color: var(--pink); box-shadow: 0 0 20px var(--pink); }
+        .badge:hover { transform: scale(1.1); }
+        .badge-tooltip {
+            position: absolute; bottom: -35px; left: 50%; transform: translateX(-50%); background: rgba(0, 0, 0, 0.9);
+            padding: 5px 10px; border-radius: 8px; font-size: 0.7rem; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.3s; z-index: 10;
+        }
+        .badge:hover .badge-tooltip { opacity: 1; }
+
+        /* Calendar */
+        .github-calendar { background: rgba(0, 0, 0, 0.3); padding: 15px; border-radius: 15px; display: grid; grid-template-columns: 30px 1fr; gap: 8px; align-items: start; }
+        .calendar-labels { display: flex; flex-direction: column; gap: 8px; font-size: 0.65rem; color: var(--lavender); padding-top: 2px; }
+        .calendar-labels span { height: 12px; line-height: 12px; }
+        .calendar-grid { display: grid; grid-template-rows: repeat(7, 12px); grid-auto-flow: column; gap: 3px; }
+        .calendar-day { width: 12px; height: 12px; background: rgba(255, 255, 255, 0.1); border-radius: 2px; cursor: pointer; transition: all 0.2s; position: relative; }
+        .calendar-day:hover { transform: scale(1.3); border: 1px solid var(--pink); z-index: 10; }
+        .calendar-day[data-level="1"] { background: rgba(255, 107, 203, 0.3); }
+        .calendar-day[data-level="2"] { background: rgba(255, 107, 203, 0.5); }
+        .calendar-day[data-level="3"] { background: rgba(255, 107, 203, 0.7); }
+        .calendar-day[data-level="4"] { background: rgba(255, 107, 203, 0.9); }
+        .calendar-day[data-level="5"] { background: var(--pink); box-shadow: 0 0 8px var(--pink); }
+        .calendar-tooltip {
+            position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); background: rgba(0, 0, 0, 0.95);
+            padding: 6px 10px; border-radius: 6px; font-size: 0.65rem; white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity 0.2s; z-index: 100; border: 1px solid var(--pink);
+        }
+        .calendar-day:hover .calendar-tooltip { opacity: 1; }
+        .calendar-legend { display: flex; align-items: center; justify-content: center; gap: 4px; margin-top: 10px; }
+        .legend-box { width: 12px; height: 12px; border-radius: 2px; border: 1px solid rgba(255, 255, 255, 0.1); }
+
+        /* Modal */
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.3s;
+        }
+        .modal.active { opacity: 1; pointer-events: auto; }
+        .modal-content {
+            background: linear-gradient(135deg, rgba(157, 78, 221, 0.3), rgba(255, 107, 203, 0.3)); backdrop-filter: blur(20px);
+            border: 2px solid var(--pink); border-radius: 30px; padding: 50px; text-align: center; box-shadow: 0 0 60px var(--pink); transform: scale(0.8); transition: transform 0.3s;
+        }
+        .modal.active .modal-content { transform: scale(1); }
+        .modal-icon { font-size: 5rem; animation: float 2s ease-in-out infinite; }
+        .modal-title { font-size: 3rem; font-weight: bold; background: linear-gradient(90deg, var(--pink), var(--blue), var(--mint)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 20px 0; }
+        .modal-message { font-size: 1.2rem; color: var(--lavender); margin-bottom: 30px; }
+        .modal-btn {
+            background: linear-gradient(135deg, var(--purple), var(--pink)); border: none; padding: 15px 40px;
+            border-radius: 25px; color: white; font-size: 1rem; font-weight: bold; cursor: pointer; transition: all 0.3s;
+        }
+        .modal-btn:hover { transform: scale(1.05); box-shadow: 0 0 30px var(--pink); }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(var(--purple), var(--pink)); border-radius: 10px; }
+
+        /* Sparkle */
+        .sparkle { position: fixed; pointer-events: none; z-index: 999; animation: sparkleAnim 1s ease-out forwards; }
+        @keyframes sparkleAnim { 0% { transform: scale(0) rotate(0deg); opacity: 1; } 100% { transform: scale(1.5) rotate(180deg); opacity: 0; } }
+
+        /* =========================================
+           DOG ANIMATION STYLES
+           ========================================= */
+        #dog-overlay-container {
+            position: absolute;
+            bottom: -10px; /* Aligns feet to bottom edge */
+            left: 0;
+            
+            /* UPDATED: Z-INDEX 40 (Text is 30) allows dog to overlay text */
+            z-index: 40; 
+            
+            pointer-events: none; /* Click-through enabled */
+            width: 300px; height: 300px;
+            transform: scale(0.2); 
+            transform-origin: bottom center;
+            will-change: transform, left;
+            transition: left linear; 
+        }
+
+        /* Squiggly Effect */
+        @keyframes squigglevision {
+            0% { filter: url("#squiggly-0"); } 25% { filter: url("#squiggly-1"); } 50% { filter: url("#squiggly-2"); } 75% { filter: url("#squiggly-3"); } 100% { filter: url("#squiggly-4"); }
+        }
+
+        .dog-main {
+            height: 300px; width: 300px;
+            display: flex; justify-content: center; align-items: center;
+            animation: squigglevision 0.3s infinite;
+        }
+        .dog-main * { position: absolute; will-change: transform; animation-timing-function: var(--easing) !important; }
+        .dog-main *:before, .dog-main *:after { content: ''; position: absolute; }
+
+        /* Body Parts */
+        .neck { width: 50%; height: 100px; right: -5px; bottom: calc(100% - 10px); transform-origin: center bottom; transform: rotate(15deg); z-index: 2; }
+        .neck > .fur { border-bottom-left-radius: 10px; height: 100%; width: 100%; overflow: hidden; }
+        .neck > .fur:before { top: 0; right: 0; height: 50px; width: 100%; background-color: var(--color-fur-dark); z-index: 1; transform-origin: right bottom; transform: rotate(15deg); }
+        .neck > .fur:after { width: 100%; height: 150%; top: 0; left: 0; background-color: var(--color-fur); transform-origin: center bottom; }
+
+        .collar { width: calc(100% + 10px); height: 15%; background-color: var(--color-collar); left: -5px; bottom: 30px; border-radius: 5px; animation: collar var(--semi-duration) calc(var(--semi-duration) / 4) infinite; z-index: 2; }
+        @keyframes collar { from, to { transform: none; } 50% { transform: translateY(-25%); } }
+        .collar:after { width: 18%; height: 120%; border-radius: 50%; background: var(--color-snout); right: 0%; top: 110%; transform-origin: center top; animation: tag var(--semi-duration) infinite both; }
+        @keyframes tag { from, to { transform: rotate(-15deg); } 50% { transform: rotate(-15deg) scaleY(1.5); } }
+
+        .head { height: 80%; width: 145%; left: -2%; bottom: 50%; transform-origin: left center; z-index: 2; animation: head var(--semi-duration) calc(var(--semi-duration) / 4) infinite; }
+        @keyframes head { from, to { transform: rotate(-10deg); } 50% { transform: rotate(-15deg); } }
+        .head > .fur { height: 100%; width: 100%; border-bottom-right-radius: 80px; overflow: hidden; }
+        .head > .fur:after { width: 100%; height: 150%; top: 0; left: 0; background-color: var(--color-fur); transform-origin: center bottom; }
+        .head > .fur:before { top: -80%; left: -30%; width: 100%; height: 0; padding-top: 100%; background-color: var(--color-spot); z-index: 1; border-radius: 50%; }
+
+        .snout { width: 25%; height: 0; padding-top: 25%; background-color: var(--color-snout); top: 0; right: -5px; border-bottom-left-radius: 100%; z-index: 1; }
+        .ears { bottom: 40%; height: 100%; width: 30%; left: 0; z-index: -1; }
+        .ear { width: 100%; height: 100%; bottom: 0; left: 0; transform-origin: left bottom; transform: rotate(-10deg); animation: ear-front calc(var(--duration) / 2) infinite; }
+        @keyframes ear-front { 50% { transform: rotate(-15deg); } }
+        .ear:before { height: 25px; width: 15px; z-index: 2; top: -2px; right: -7px; border-top-left-radius: 100%; border-width: 2px; border-style: solid; border-color: transparent; border-left: 2px solid var(--color-snout); transform-origin: bottom left; animation: ear-mark var(--semi-duration) calc(-1 * var(--semi-duration)) infinite; }
+        @keyframes ear-mark { from, to { transform: rotate(0deg); } 50% { transform: rotate(25deg); } }
+        .ear > .fur { border-top-left-radius: 100%; height: 100%; width: 100%; overflow: hidden; }
+        .ear > .fur:after { width: 100%; height: 150%; top: 0; left: 0; background-color: var(--color-spot); transform-origin: center bottom; }
+        .ear:nth-child(2) { left: 15px; bottom: 5px; transform: rotate(-5deg); z-index: -1; animation: ear-back calc(var(--duration) / 2) infinite both; }
+        @keyframes ear-back { from, to { transform: rotate(0deg); } 50% { transform: rotate(-10deg); } }
+        .ear:nth-child(2) > .fur:after { background-color: var(--color-fur); }
+
+        .eye { width: 6%; height: 0; padding: 6%; left: 35%; top: 20%; border-radius: 50%; background-color: var(--color-snout); z-index: 1; }
+        .eye:before { top: 0; left: 0; width: 100%; height: 100%; border-radius: 50%; background-color: var(--color-snout); z-index: 1; }
+        .eye:after { width: 100%; height: 100%; left: -50%; top: -50%; border-top-left-radius: 100%; border-width: 2px; border-style: solid; border-color: var(--color-snout); border-bottom-color: var(--color-spot); border-right-color: var(--color-spot); transform: scale(1.25); z-index: 0; }
+
+        .torso { width: 170px; height: 100px; animation: torso var(--semi-duration) both infinite; }
+        @keyframes torso { from, to { transform: none; } 50% { transform: translateY(15%); } }
+        .torso > .fur { height: 100%; width: 185px; border-top-left-radius: 40px; transform-origin: left center; transform: rotate(-20deg) translateY(10px); z-index: 1; overflow: hidden; }
+        .torso > .fur:after { width: 100%; height: 150%; top: 0; left: 0; background-color: var(--color-fur); transform-origin: center bottom; border-bottom-left-radius: 200px 85px; border-bottom-right-radius: 100px; }
+        .torso > .legs { top: 0; left: 0; width: 100%; height: 100%; }
+
+        .spot { width: 120px; height: 120px; bottom: 40px; left: -20px; border-radius: 50%; background-color: var(--color-spot); z-index: 1; animation: spot var(--duration) calc(-1 * var(--semi-duration)) both infinite; }
+        @keyframes spot { from, 66%, to { transform: none; } 33% { transform: translateX(10px); } }
+        .spot:after { height: 20px; width: 20px; border-radius: 50%; background-color: inherit; bottom: -10px; right: 5px; }
+        .torso > .tail { bottom: calc(100% - 15px); left: 0; transform-origin: center bottom; transform: rotate(-45deg); }
+
+        .tail { height: 15px; width: 20px; background-color: var(--color-spot); border-top-right-radius: 10px 100%; border-top-left-radius: 10px 100%; animation: tail var(--semi-duration) infinite; }
+        @keyframes tail { from, to { transform: rotate(-45deg) translateX(-15%); } 50% { transform: rotate(-25deg) translateX(15%); } }
+        .tail > .tail { bottom: calc(90%); transform-origin: bottom left; transform: rotate(-10deg) translateY(50%) scaleX(.8) scaleY(.9); animation: tail-inner var(--semi-duration) var(--stagger) infinite; background-color: var(--color-spot); }
+        @keyframes tail-inner { from, to { transform: rotate(-10deg) translateY(50%) scaleX(.8) scaleY(.9); } 50% { transform: rotate(5deg) translateY(50%) scaleX(.8) scaleY(.9) } }
+
+        .legs > .leg { bottom: 5px; }
+        .legs > .leg:nth-child(1), .legs > .leg:nth-child(3) { right: 15px; }
+        .legs > .leg:nth-child(2), .legs > .leg:nth-child(4) { left: 0; }
+        .legs > .leg:nth-child(1) .fur:after, .legs > .leg:nth-child(2) .fur:after, .legs > .leg:nth-child(1) .leg-inner .fur:after, .legs > .leg:nth-child(2) .leg-inner .fur:after, .legs > .leg:nth-child(1) .leg-inner:before, .legs > .leg:nth-child(2) .leg-inner:before { background-color: var(--color-fur); }
+        .legs > .leg:nth-child(3), .legs > .leg:nth-child(4) { z-index: -1; }
+        .legs > .leg:nth-child(3) .fur:after, .legs > .leg:nth-child(4) .fur:after, .legs > .leg:nth-child(3) .leg-inner .fur:after, .legs > .leg:nth-child(4) .leg-inner .fur:after, .legs > .leg:nth-child(3) .leg-inner:before, .legs > .leg:nth-child(4) .leg-inner:before { background-color: var(--color-fur-dark); }
+        .legs > .leg:nth-child(1) { animation-delay: 0s; }
+        .legs > .leg:nth-child(1) .leg-inner { animation-delay: 0s; }
+        .legs > .leg:nth-child(4) { animation-delay: 0s; }
+        .legs > .leg:nth-child(4) .leg-inner { animation-delay: 0s; }
+        .legs > .leg:nth-child(2) { animation-delay: calc(-1 * var(--duration) / 2 ); }
+        .legs > .leg:nth-child(2) .leg-inner { animation-delay: calc(-1 * var(--duration) / 2 ); }
+        .legs > .leg:nth-child(3) { animation-delay: calc(-1 * var(--duration) / 2 ); }
+        .legs > .leg:nth-child(3) .leg-inner { animation-delay: calc(-1 * var(--duration) / 2 ); }
+
+        .leg { position: absolute; height: 65px; width: 45px; transform-origin: center 5px; animation: leg infinite var(--duration); }
+        @keyframes leg { from, to { transform: none; } 33% { transform: rotate(-55deg); } 66% { transform: rotate(-20deg); } }
+        .leg > .fur { width: 144%; height: 100%; position: absolute; overflow: hidden; }
+        .leg > .fur:after { width: 45px; bottom: 0; top: initial; height: 150%; transform: rotate(15deg); transform-origin: center bottom; }
+        .leg-inner { position: absolute; height: 65%; width: 100%; top: calc(100%); transform-origin: center top; transform: rotate(90deg); animation: leg-inner infinite var(--duration); }
+        @keyframes leg-inner { from, to { transform: none; } 33% { transform: rotate(70deg); } 76% { transform: none; } }
+        .leg-inner:before { width: 45px; height: 45px; border-radius: 50%; top: -22.5px; }
+        .leg-inner > .fur { width: 100%; height: 100%; position: absolute; top: 0; left: 0; overflow: hidden; }
+        .leg-inner > .fur:after { width: 100%; height: 150%; top: 0; left: 0; transform-origin: center top; transform: rotate(15deg); }
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+    
+    <div class="nebula-container">
+        <div class="nebula-cloud"></div>
+        <div class="nebula-cloud"></div>
+        <div class="nebula-cloud"></div>
+    </div>
+
+    <div class="app-container">
+        <header class="header" id="header-area">
+            
+            <div id="dog-overlay-container">
+                <div class="dog-main">
+                    <div class="torso">
+                        <div class="fur"><div class="spot"></div></div>
+                        <div class="neck">
+                            <div class="fur"></div>
+                            <div class="head">
+                                <div class="fur"><div class="snout"></div></div>
+                                <div class="ears">
+                                    <div class="ear"><div class="fur"></div></div>
+                                    <div class="ear"><div class="fur"></div></div>
+                                </div>
+                                <div class="eye"></div>
+                            </div>
+                            <div class="collar"></div>
+                        </div>
+                        <div class="legs">
+                            <div class="leg"><div class="fur"></div><div class="leg-inner"><div class="fur"></div></div></div>
+                            <div class="leg"><div class="fur"></div><div class="leg-inner"><div class="fur"></div></div></div>
+                            <div class="leg"><div class="fur"></div><div class="leg-inner"><div class="fur"></div></div></div>
+                            <div class="leg"><div class="fur"></div><div class="leg-inner"><div class="fur"></div></div></div>
+                        </div>
+                        <div class="tail">
+                            <div class="tail">
+                                <div class="tail">
+                                    <div class="tail -end">
+                                        <div class="tail">
+                                            <div class="tail"><div class="tail"><div class="tail"></div></div></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="user-greeting">
+                <div class="greeting-text">
+                    <h1>Hi Shwetha! ✨</h1>
+                    <p>Let's crush some goals today!</p>
+                </div>
+            </div>
+
+            <div class="level-display">
+                <div class="level-circle">
+                    <div class="level-ring" id="level-ring">
+                        <div class="level-inner">
+                            <div class="level-num" id="level-num">1</div>
+                            <div class="level-label">LEVEL</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-row">
+                <div class="stat-chip">
+                    <div class="stat-value" id="streak-val">0</div>
+                    <div class="stat-label">🔥 Streak</div>
+                </div>
+                <div class="stat-chip">
+                    <div class="stat-value" id="xp-val">0</div>
+                    <div class="stat-label">⚡ XP</div>
+                </div>
+                <div class="stat-chip">
+                    <div class="stat-value" id="tasks-val">0</div>
+                    <div class="stat-label">✓ Tasks</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-grid">
+            <div class="panel panel-left">
+                <div class="week-nav-header">
+                    <h2>Your Journey</h2>
+                </div>
+                <div class="week-selector">
+                    <button class="nav-btn" id="prev-week" onclick="navigateWeek(-1)">◀</button>
+                    <div class="current-week-display">
+                        <div class="week-number" id="week-num">1</div>
+                        <div class="week-title" id="week-display-title">Week 1</div>
+                    </div>
+                    <button class="nav-btn" id="next-week" onclick="navigateWeek(1)">▶</button>
+                </div>
+                <div class="week-progress-bar">
+                    <div class="week-progress-fill" id="week-progress"></div>
+                </div>
+                <div class="milestone-list" id="milestone-list">
+                    </div>
+            </div>
+
+            <div class="panel panel-center">
+                <div class="kanban-header">
+                    <button class="reset-btn" onclick="resetAllProgress()" title="Reset All Progress">↺</button>
+                    <div class="kanban-title" id="kanban-title">Week 1: Python Basics</div>
+                    <div class="kanban-subtitle" id="kanban-subtitle">Variables, Loops, Git, Array</div>
+                </div>
+                <div class="kanban-grid">
+                    <div class="kanban-col todo" ondragover="allowDrop(event)" ondrop="drop(event, 'todo')">
+                        <div class="col-header">
+                            <span class="col-title">📋 To Do</span>
+                            <span class="col-count" id="todo-count">0</span>
+                        </div>
+                        <div class="task-list" id="todo-list"></div>
+                    </div>
+                    <div class="kanban-col progress" ondragover="allowDrop(event)" ondrop="drop(event, 'inprogress')">
+                        <div class="col-header">
+                            <span class="col-title">⚡ In Progress</span>
+                            <span class="col-count" id="progress-count">0</span>
+                        </div>
+                        <div class="task-list" id="inprogress-list"></div>
+                    </div>
+                    <div class="kanban-col done" ondragover="allowDrop(event)" ondrop="drop(event, 'done')">
+                        <div class="col-header">
+                            <span class="col-title">✨ Done</span>
+                            <span class="col-count" id="done-count">0</span>
+                        </div>
+                        <div class="task-list" id="done-list"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-right">
+                <div class="dashboard-grid">
+                    <div class="progress-rings">
+                        <div class="ring-stat">
+                            <div class="ring-visual">
+                                <div class="ring-bg"></div>
+                                <div class="ring-progress" id="ring-weeks" style="--color: var(--pink);"></div>
+                                <div class="ring-center">
+                                    <div class="ring-value" style="color: var(--pink);" id="weeks-done">0</div>
+                                </div>
+                            </div>
+                            <div class="ring-label">Weeks Complete</div>
+                        </div>
+                        <div class="ring-stat">
+                            <div class="ring-visual">
+                                <div class="ring-bg"></div>
+                                <div class="ring-progress" id="ring-progress" style="--color: var(--blue);"></div>
+                                <div class="ring-center">
+                                    <div class="ring-value" style="color: var(--blue);" id="progress-pct">0%</div>
+                                </div>
+                            </div>
+                            <div class="ring-label">Overall Progress</div>
+                        </div>
+                    </div>
+
+                    <div class="achievements-section">
+                        <div class="section-title">🏆 Trophy Case</div>
+                        <div class="badge-grid" id="badge-grid">
+                            </div>
+
+                        <div class="section-title" style="margin-top: 20px;">📅 Activity Calendar</div>
+                        <div class="github-calendar">
+                            <div class="calendar-labels">
+                                <span>Mon</span>
+                                <span>Wed</span>
+                                <span>Fri</span>
+                            </div>
+                            <div class="calendar-grid" id="activity-calendar">
+                                </div>
+                        </div>
+                        <div class="calendar-legend">
+                            <span style="font-size: 0.7rem; color: var(--lavender); margin-right: 8px;">Less</span>
+                            <div class="legend-box" style="background: rgba(255, 255, 255, 0.1);"></div>
+                            <div class="legend-box" style="background: rgba(255, 107, 203, 0.3);"></div>
+                            <div class="legend-box" style="background: rgba(255, 107, 203, 0.6);"></div>
+                            <div class="legend-box" style="background: rgba(255, 107, 203, 0.9);"></div>
+                            <div class="legend-box" style="background: var(--pink);"></div>
+                            <span style="font-size: 0.7rem; color: var(--lavender); margin-left: 8px;">More</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <div class="modal-icon">🎉</div>
+            <div class="modal-title">LEVEL UP!</div>
+            <div class="modal-message">You've reached Level <span id="modal-level">2</span>!</div>
+            <button class="modal-btn" onclick="closeModal()">Continue Slaying! 💪</button>
+        </div>
+    </div>
+
+    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" style="display:none">
+        <defs>
+            <filter id="squiggly-0"><feturbulence id="turbulence" basefrequency="0.02" numoctaves="3" result="noise" seed="0"></feturbulence><fedisplacementmap id="displacement" in="SourceGraphic" in2="noise" scale="2"></fedisplacementmap></filter>
+            <filter id="squiggly-1"><feturbulence id="turbulence" basefrequency="0.02" numoctaves="3" result="noise" seed="1"></feturbulence><fedisplacementmap in="SourceGraphic" in2="noise" scale="3"></fedisplacementmap></filter>
+            <filter id="squiggly-2"><feturbulence id="turbulence" basefrequency="0.02" numoctaves="3" result="noise" seed="2"></feturbulence><fedisplacementmap in="SourceGraphic" in2="noise" scale="2"></fedisplacementmap></filter>
+            <filter id="squiggly-3"><feturbulence id="turbulence" basefrequency="0.02" numoctaves="3" result="noise" seed="3"></feturbulence><fedisplacementmap in="SourceGraphic" in2="noise" scale="3"></fedisplacementmap></filter>
+            <filter id="squiggly-4"><feturbulence id="turbulence" basefrequency="0.02" numoctaves="3" result="noise" seed="4"></feturbulence><fedisplacementmap in="SourceGraphic" in2="noise" scale="1"></fedisplacementmap></filter>
+        </defs>
+    </svg>
+
+    <script>
+        // Roadmap Data
+        const ROADMAP = [
+            { id: 1, title: "Week 1: Python Basics", topic: "Variables, Loops, Git, Array (Easy)", tasks: ["Python Variables & Types", "If-else & Loops", "Git Setup & GitHub Account", "LC: Two Sum", "LC: Best Time to Buy Stock", "LC: Contains Duplicate", "LC: Valid Anagram", "LC: Max Subarray"] },
+            { id: 2, title: "Week 2: Functions & Files", topic: "Lists, File Handling, Strings", tasks: ["Python Functions", "Lists/Tuples/Sets/Dicts", "File Handling IO", "Git: add/commit/push", "LC: String Manipulation (5 Problems)"] },
+            { id: 3, title: "Week 3: Java Base", topic: "JVM, Arrays, SQL Intro", tasks: ["Java Syntax & JVM Intro", "Java Arrays & Strings", "SQL Basics", "LC: Arrays + Strings Mix"] },
+            { id: 4, title: "Week 4: OOPS Start", topic: "Classes, Objects, Resume Research", tasks: ["Java Class & Objects", "Encapsulation", "SQL CRUD Ops", "Resume Research", "LC: Review Month 1"] },
+            { id: 5, title: "Week 5: Java OOPS Deep", topic: "Inheritance, Polymorphism, SQL Joins", tasks: ["Java Inheritance", "Java Polymorphism", "SQL Joins", "LC: Two Pointers"] },
+            { id: 6, title: "Week 6: Abstraction", topic: "Interfaces, Subqueries", tasks: ["Java Interfaces", "Abstract Classes", "SQL Subqueries", "LC: HashMap Problems"] },
+            { id: 7, title: "Week 7: Exception Handling", topic: "Collections, GitHub Daily", tasks: ["Python OOPS", "Exception Handling", "Java Collections Framework", "GitHub Daily Commits"] },
+            { id: 8, title: "Week 8: DSA Intro", topic: "Complexity, Recursion", tasks: ["Time Complexity Analysis", "Recursion Basics", "LC: Recursion Problems"] },
+            { id: 9, title: "Week 9: Web Basics", topic: "HTML, CSS, JS, Arrays Med", tasks: ["HTML5 & CSS3 Basics", "JavaScript ES6+", "LC: Arrays Medium"] },
+            { id: 10, title: "Week 10: React Start", topic: "Components, Props, State", tasks: ["React Setup (Vite)", "Components & Props", "useState Hook", "Start Project 1: Student Mgmt"] },
+            { id: 11, title: "Week 11: React Hooks", topic: "API, Linked List", tasks: ["useEffect & Custom Hooks", "API Integration (Fetch/Axios)", "DSA: Linked Lists", "LC: Linked List Problems"] },
+            { id: 12, title: "Week 12: Stack & Queue", topic: "Data Structures, Resume V1", tasks: ["DSA: Stacks", "DSA: Queues", "Complete Project 1", "Draft Resume V1"] },
+            { id: 13, title: "Week 13: Database Integ", topic: "JDBC, Java+SQL", tasks: ["Java JDBC", "SQL Integration", "Start Project 2: Billing App"] },
+            { id: 14, title: "Week 14: AWS Basics", topic: "EC2, S3", tasks: ["AWS Account Setup", "EC2 Basics", "Hosting Static App", "S3 Buckets"] },
+            { id: 15, title: "Week 15: Docker", topic: "Containerization", tasks: ["Docker Basics", "Writing Dockerfiles", "Containerize Simple App"] },
+            { id: 16, title: "Week 16: Proj Completion", topic: "Project 2 & 3", tasks: ["Complete Project 2", "Start Project 3: Task Manager"] },
+            { id: 17, title: "Week 17: Trees", topic: "Binary Search, Trees", tasks: ["DSA: Binary Trees", "DSA: Binary Search", "LC: Tree Problems"] },
+            { id: 18, title: "Week 18: Graphs & Sort", topic: "Graph Theory, Sorting Algos", tasks: ["DSA: Graphs Intro", "Sorting Algorithms", "LC: Sorting"] },
+            { id: 19, title: "Week 19: AI/ML Overview", topic: "Concepts, Project 4", tasks: ["AI/ML Concepts Revision", "Start Project 4: Resume Analyzer"] },
+            { id: 20, title: "Week 20: Advanced Proj", topic: "Complete AI Project", tasks: ["Complete Project 4", "Start Project 5: Cloud App"] },
+            { id: 21, title: "Week 21: System Design", topic: "REST, Design Basics", tasks: ["System Design Basics", "REST API Principles", "Finalize Resume"] },
+            { id: 22, title: "Week 22: Portfolio", topic: "GitHub Opt, Website", tasks: ["GitHub Profile Optimization", "Build Portfolio Website"] },
+            { id: 23, title: "Week 23: Mock Interviews", topic: "HR, Revision", tasks: ["Mock Interviews", "HR Questions Prep", "LC: Hard/Medium Revision"] },
+            { id: 24, title: "Week 24: Job Ready", topic: "LinkedIn, Applications", tasks: ["LinkedIn Optimization", "Apply to 10 Jobs/Day", "Final Polish"] }
+        ];
+
+        const BADGES = [
+            { id: 'first', icon: '🌟', title: 'First Steps', check: s => s.stats.totalTasks >= 1 },
+            { id: 'task10', icon: '🤖', title: 'Task Machine', check: s => s.stats.totalTasks >= 10 },
+            { id: 'week', icon: '⚔️', title: 'Week Warrior', check: s => s.progress.some(w => w.completed) },
+            { id: 'streak7', icon: '🔥', title: '7 Day Streak', check: s => s.user.streak >= 7 },
+            { id: 'xp2000', icon: '🚀', title: 'XP Hunter', check: s => s.user.xp >= 2000 },
+            { id: 'level5', icon: '💎', title: 'Level 5', check: s => s.user.level >= 5 },
+            { id: 'halfway', icon: '🏔️', title: 'Halfway', check: s => s.progress.filter(w => w.completed).length >= 12 },
+            { id: 'master', icon: '👑', title: 'Master', check: s => s.progress.every(w => w.completed) }
+        ];
+
+        // State
+        let state = {
+            user: { name: "Shwetha", xp: 0, level: 1, streak: 0, lastLogin: null },
+            currentWeek: 1,
+            progress: [],
+            kanban: {},
+            stats: { totalTasks: 0, bestStreak: 0 },
+            badges: []
+        };
+
+        let draggedTask = null;
+
+        // Init
+        function init() {
+            createStars();
+            loadState();
+            updateAllUI();
+            initDogWalking(); // Start the dog
+        }
+
+        function createStars() {
+            const stars = document.getElementById('stars');
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                stars.appendChild(star);
+            }
+        }
+
+        function loadState() {
+            const saved = localStorage.getItem('shwetha_future_v2');
+            if (saved) {
+                try {
+                    state = JSON.parse(saved);
+                    syncData();
+                } catch {
+                    initState();
+                }
+            } else {
+                initState();
+            }
+            checkStreak();
+        }
+
+        function initState() {
+            state = {
+                user: { name: "Shwetha", xp: 0, level: 1, streak: 0, lastLogin: null },
+                currentWeek: 1,
+                progress: ROADMAP.map((w, i) => ({ id: w.id, locked: i !== 0, completed: false })),
+                kanban: {},
+                stats: { totalTasks: 0, bestStreak: 0 },
+                badges: [],
+                activityLog: {}
+            };
+            ROADMAP.forEach(week => {
+                state.kanban[week.id] = {
+                    todo: week.tasks.map((t, i) => ({ id: `t${week.id}-${i}`, text: t })),
+                    inprogress: [],
+                    done: []
+                };
+            });
+            saveState();
+        }
+
+        function syncData() {
+            if (!state.activityLog) state.activityLog = {};
+            
+            ROADMAP.forEach((week, i) => {
+                if (!state.kanban[week.id]) {
+                    state.kanban[week.id] = {
+                        todo: week.tasks.map((t, idx) => ({ id: `t${week.id}-${idx}`, text: t })),
+                        inprogress: [],
+                        done: []
+                    };
+                }
+                if (!state.progress.some(p => p.id === week.id)) {
+                    state.progress.push({ id: week.id, locked: i !== 0, completed: false });
+                }
+            });
+        }
+
+        function saveState() {
+            localStorage.setItem('shwetha_future_v2', JSON.stringify(state));
+        }
+
+        function checkStreak() {
+            const today = new Date().toISOString().split('T')[0];
+            if (state.user.lastLogin !== today) {
+                const last = state.user.lastLogin ? new Date(state.user.lastLogin) : null;
+                if (last) {
+                    const diff = Math.ceil((new Date(today) - last) / (1000 * 60 * 60 * 24));
+                    if (diff > 1) state.user.streak = 0;
+                }
+                state.user.lastLogin = today;
+                saveState();
+            }
+        }
+
+        // Navigation
+        function navigateWeek(dir) {
+            const newWeek = state.currentWeek + dir;
+            if (newWeek < 1 || newWeek > 24) return;
+            const weekState = state.progress.find(p => p.id === newWeek);
+            if (weekState && !weekState.locked) {
+                state.currentWeek = newWeek;
+                updateAllUI();
+            }
+        }
+
+        // UI Updates
+        function updateAllUI() {
+            updateHeader();
+            updateWeekNav();
+            updateKanban();
+            updateDashboard();
+            updateMilestones();
+        }
+
+        function updateHeader() {
+            document.getElementById('level-num').textContent = state.user.level;
+            document.getElementById('streak-val').textContent = state.user.streak;
+            document.getElementById('xp-val').textContent = state.user.xp;
+            document.getElementById('tasks-val').textContent = state.stats.totalTasks;
+
+            const nextLvlXP = Math.pow(state.user.level, 2) * 100;
+            const prevLvlXP = Math.pow(state.user.level - 1, 2) * 100;
+            const pct = ((state.user.xp - prevLvlXP) / (nextLvlXP - prevLvlXP)) * 100;
+            document.getElementById('level-ring').style.setProperty('--progress', `${Math.min(pct, 100)}%`);
+        }
+
+        function updateWeekNav() {
+            const week = ROADMAP.find(w => w.id === state.currentWeek);
+            document.getElementById('week-num').textContent = state.currentWeek;
+            document.getElementById('week-display-title').textContent = week.title;
+
+            const kanban = state.kanban[state.currentWeek];
+            const total = kanban.todo.length + kanban.inprogress.length + kanban.done.length;
+            const done = kanban.done.length;
+            const pct = total > 0 ? (done / total) * 100 : 0;
+            document.getElementById('week-progress').style.width = `${pct}%`;
+
+            const prevBtn = document.getElementById('prev-week');
+            const nextBtn = document.getElementById('next-week');
+            prevBtn.disabled = state.currentWeek === 1;
+            
+            if (state.currentWeek < 24) {
+                const nextWeekState = state.progress.find(p => p.id === state.currentWeek + 1);
+                nextBtn.disabled = !nextWeekState || nextWeekState.locked;
+            } else {
+                nextBtn.disabled = true;
+            }
+        }
+
+        function updateKanban() {
+            const week = ROADMAP.find(w => w.id === state.currentWeek);
+            document.getElementById('kanban-title').textContent = week.title;
+            document.getElementById('kanban-subtitle').textContent = week.topic;
+
+            const kanban = state.kanban[state.currentWeek];
+            renderColumn('todo-list', kanban.todo);
+            renderColumn('inprogress-list', kanban.inprogress);
+            renderColumn('done-list', kanban.done);
+
+            document.getElementById('todo-count').textContent = kanban.todo.length;
+            document.getElementById('progress-count').textContent = kanban.inprogress.length;
+            document.getElementById('done-count').textContent = kanban.done.length;
+        }
+
+        function renderColumn(id, tasks) {
+            const list = document.getElementById(id);
+            list.innerHTML = '';
+            tasks.forEach(task => {
+                const card = document.createElement('div');
+                card.className = 'task-card';
+                card.draggable = true;
+                card.innerHTML = `<div class="task-text">${task.text}</div>`;
+                card.ondragstart = e => {
+                    draggedTask = task.id;
+                    e.dataTransfer.effectAllowed = 'move';
+                };
+                card.onclick = () => moveTaskNext(task.id, id);
+                list.appendChild(card);
+            });
+        }
+
+        function allowDrop(e) {
+            e.preventDefault();
+        }
+
+        function drop(e, target) {
+            e.preventDefault();
+            if (draggedTask) {
+                moveTask(draggedTask, target);
+                draggedTask = null;
+            }
+        }
+
+        function moveTaskNext(taskId, currentCol) {
+            const map = { 'todo-list': 'inprogress', 'inprogress-list': 'done', 'done-list': 'done' };
+            moveTask(taskId, map[currentCol]);
+        }
+
+        function moveTask(taskId, target) {
+            const kanban = state.kanban[state.currentWeek];
+            let task = null;
+            let source = null;
+
+            ['todo', 'inprogress', 'done'].forEach(col => {
+                const idx = kanban[col].findIndex(t => t.id === taskId);
+                if (idx !== -1) {
+                    task = kanban[col][idx];
+                    source = col;
+                    kanban[col].splice(idx, 1);
+                }
+            });
+
+            if (task && source !== target) {
+                kanban[target].push(task);
+
+                if (target === 'done') {
+                    addXP(50);
+                    state.stats.totalTasks++;
+                    state.user.streak++;
+                    if (state.user.streak > state.stats.bestStreak) {
+                        state.stats.bestStreak = state.user.streak;
+                    }
+                    
+                    // Log activity for calendar
+                    const today = new Date().toISOString().split('T')[0];
+                    if (!state.activityLog) state.activityLog = {};
+                    state.activityLog[today] = (state.activityLog[today] || 0) + 1;
+                    
+                    createSparkles(event);
+                    safeConfetti({ particleCount: 30, spread: 60 });
+                }
+
+                checkWeekComplete();
+                checkBadges();
+                saveState();
+                updateAllUI();
+            }
+        }
+
+        function checkWeekComplete() {
+            const kanban = state.kanban[state.currentWeek];
+            if (kanban.todo.length === 0 && kanban.inprogress.length === 0 && kanban.done.length > 0) {
+                const weekState = state.progress.find(p => p.id === state.currentWeek);
+                if (weekState && !weekState.completed) {
+                    weekState.completed = true;
+                    addXP(500);
+                    const nextWeek = state.progress.find(p => p.id === state.currentWeek + 1);
+                    if (nextWeek) nextWeek.locked = false;
+                }
+            }
+        }
+
+        function addXP(amount) {
+            state.user.xp += amount;
+            const newLvl = Math.floor(Math.sqrt(state.user.xp / 100)) + 1;
+            if (newLvl > state.user.level) {
+                state.user.level = newLvl;
+                showModal(newLvl);
+            }
+        }
+
+        function checkBadges() {
+            BADGES.forEach(badge => {
+                if (!state.badges.includes(badge.id) && badge.check(state)) {
+                    state.badges.push(badge.id);
+                    safeConfetti({ particleCount: 60, spread: 80 });
+                }
+            });
+        }
+
+        function updateDashboard() {
+            const weeksCompleted = state.progress.filter(p => p.completed).length;
+            const totalWeeks = 24;
+            const overallPct = (weeksCompleted / totalWeeks) * 100;
+
+            document.getElementById('weeks-done').textContent = weeksCompleted;
+            document.getElementById('progress-pct').textContent = Math.floor(overallPct) + '%';
+
+            const weeksRotation = (weeksCompleted / totalWeeks) * 360;
+            const progressRotation = (overallPct / 100) * 360;
+
+            document.getElementById('ring-weeks').style.setProperty('--rotation', `${weeksRotation}deg`);
+            document.getElementById('ring-progress').style.setProperty('--rotation', `${progressRotation}deg`);
+
+            const badgeGrid = document.getElementById('badge-grid');
+            badgeGrid.innerHTML = '';
+            BADGES.forEach(badge => {
+                const div = document.createElement('div');
+                div.className = `badge ${state.badges.includes(badge.id) ? 'unlocked' : ''}`;
+                div.innerHTML = `
+                    ${badge.icon}
+                    <div class="badge-tooltip">${badge.title}</div>
+                `;
+                badgeGrid.appendChild(div);
+            });
+
+            renderCalendar();
+        }
+
+        function renderCalendar() {
+            const calendar = document.getElementById('activity-calendar');
+            calendar.innerHTML = '';
+            
+            // Initialize activity log if missing
+            if (!state.activityLog) state.activityLog = {};
+            
+            // Calculate 12 weeks back (84 days)
+            const today = new Date();
+            const days = 84;
+            
+            for (let i = days - 1; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(today.getDate() - i);
+                const dateStr = date.toISOString().split('T')[0];
+                const count = state.activityLog[dateStr] || 0;
+                
+                const day = document.createElement('div');
+                day.className = 'calendar-day';
+                
+                // Determine activity level (0-5)
+                let level = 0;
+                if (count > 0) level = 1;
+                if (count >= 3) level = 2;
+                if (count >= 5) level = 3;
+                if (count >= 8) level = 4;
+                if (count >= 12) level = 5;
+                
+                if (level > 0) day.setAttribute('data-level', level);
+                
+                // Format date for display
+                const dateDisplay = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                
+                day.innerHTML = `<div class="calendar-tooltip">${dateDisplay}: ${count} ${count === 1 ? 'task' : 'tasks'}</div>`;
+                
+                calendar.appendChild(day);
+            }
+        }
+
+        function updateMilestones() {
+            const list = document.getElementById('milestone-list');
+            list.innerHTML = '';
+            
+            ROADMAP.forEach((week, i) => {
+                const weekState = state.progress.find(p => p.id === week.id);
+                const div = document.createElement('div');
+                div.className = `milestone-item ${weekState.completed ? 'completed' : ''} ${weekState.locked ? 'locked' : ''}`;
+                div.innerHTML = `
+                    <div class="milestone-label">Week ${week.id}</div>
+                    <div class="milestone-title">${week.title.split(': ')[1]}</div>
+                `;
+                if (!weekState.locked) {
+                    div.onclick = () => {
+                        state.currentWeek = week.id;
+                        updateAllUI();
+                    };
+                }
+                list.appendChild(div);
+            });
+        }
+
+        function showModal(level) {
+            document.getElementById('modal-level').textContent = level;
+            document.getElementById('modal').classList.add('active');
+            safeConfetti({ particleCount: 150, spread: 120, origin: { y: 0.5 } });
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        function createSparkles(e) {
+            if (!e) return;
+            for (let i = 0; i < 5; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                sparkle.style.left = (e.clientX + Math.random() * 40 - 20) + 'px';
+                sparkle.style.top = (e.clientY + Math.random() * 40 - 20) + 'px';
+                sparkle.innerHTML = '✨';
+                document.body.appendChild(sparkle);
+                setTimeout(() => sparkle.remove(), 1000);
+            }
+        }
+
+        function safeConfetti(opts) {
+            if (typeof confetti === 'function') confetti(opts);
+        }
+
+        function resetAllProgress() {
+            // Safety check to prevent accidental clicks
+            if (confirm("⚠️ RESET WARNING\n\nAre you sure you want to wipe all progress and restart from Level 1? This cannot be undone.")) {
+                // Clear the saved data
+                localStorage.removeItem('shwetha_future_v2');
+                // Reload the page to restart fresh
+                location.reload();
+            }
+        }
+
+        // =========================================
+        // DOG WALKING LOGIC
+        // =========================================
+        function initDogWalking() {
+            const dog = document.getElementById('dog-overlay-container');
+            const header = document.getElementById('header-area');
+            
+            // Safety check
+            if (!dog || !header) return;
+
+            let currentPos = 0; // Track current position
+            const dogVisualWidth = 60; // Estimated width at 0.35 scale
+            
+            // Start left
+            dog.style.left = '0px';
+
+            function walkLoop() {
+                // 1. Boundaries
+                const maxPos = header.offsetWidth - dogVisualWidth;
+                
+                // 2. Random Destination
+                const nextPos = Math.random() * maxPos;
+                
+                // 3. Distance & Speed (Constant Speed)
+                const distance = Math.abs(nextPos - currentPos);
+                const duration = distance / 100; // 100px per second
+                
+                // 4. Direction
+                if (nextPos > currentPos) {
+                    // Moving Right
+                    dog.style.transform = "scale(0.2) scaleX(1)"; 
+                } else {
+                    // Moving Left (Flipped)
+                    dog.style.transform = "scale(0.2) scaleX(-1)";
+                }
+
+                // 5. Apply Duration
+                dog.style.transitionDuration = `${duration}s`;
+                
+                // 6. Move
+                void dog.offsetWidth; // Force Reflow
+                dog.style.left = `${nextPos}px`;
+                
+                currentPos = nextPos;
+
+                // 7. Loop immediately
+                setTimeout(walkLoop, duration * 1000);
+            }
+
+            // Start walking
+            walkLoop();
+        }
+
+        // Start
+        init();
+    </script>
+</body>
+</html>
